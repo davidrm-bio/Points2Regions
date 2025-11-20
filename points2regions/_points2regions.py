@@ -346,6 +346,9 @@ class Points2Regions:
         self.X_train = sp.vstack([
             result['features'][result['passed_threshold']] for result in self._results.values()
         ])
+        
+        self.X_train = self.X_train.toarray()  # Densify to avoid errors with kmeans
+
 
         default_kmeans_kwargs = dict(
             init="k-means++",
@@ -401,7 +404,7 @@ class Points2Regions:
             features, passed_threshold, pix2marker_ind = result_dict['features'], result_dict['passed_threshold'], result_dict['pix2marker_ind']
             
             # Get kmeans clusters for each dataset id
-            kmeans_clusters = kmeans.predict(features[passed_threshold])
+            kmeans_clusters = kmeans.predict(features[passed_threshold].toarray())
 
             # Get clusters per pixel
             merged_clusters = clusters[kmeans_clusters]
